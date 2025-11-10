@@ -1,5 +1,6 @@
 import React from 'react'
-import { itemCategories } from '../assets/assets.js'
+import { Item_data, itemCategories } from '../assets/assets.js'
+import Itemcard from '../components/Itemcard'
 import { motion } from "motion/react"
 
 
@@ -22,8 +23,10 @@ const Itemlist = () => {
         ))}
 
       </div>
-      <div>
-        {/*item card*/}
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40'>
+        {Item_data
+  .filter((Item) => menu === 'All' || Item.category === menu)
+  .map((Item) => <Itemcard key={Item._id} Item={Item} />)}
       </div>
 
 

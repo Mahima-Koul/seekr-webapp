@@ -1,13 +1,10 @@
-import blog_pic_1 from './blog_pic_1.png';
-import blog_pic_2 from './blog_pic_2.png';
-import blog_pic_3 from './blog_pic_3.png';
-import blog_pic_4 from './blog_pic_4.png';
-import blog_pic_5 from './blog_pic_5.png';
-import blog_pic_6 from './blog_pic_6.png';
-import blog_pic_7 from './blog_pic_7.png';
-import blog_pic_8 from './blog_pic_8.png';
-import blog_pic_9 from './blog_pic_9.png';
-import blog_pic_10 from './blog_pic_10.png';
+import item_pic_1 from './item_pic_1.jpg';
+import item_pic_2 from './item_pic_2.jpg';
+import item_pic_3 from './item_pic_3.webp';
+import item_pic_4 from './item_pic_4.gif';
+import item_pic_5 from './item_pic_5.jpg';
+import item_pic_6 from './item_pic_6.jpg';
+import item_pic_7 from './item_pic_7.jpg';
 import facebook_icon from './facebook_icon.svg'
 import googleplus_icon from './googleplus_icon.svg'
 import twitter_icon from './twitter_icon.svg'
@@ -64,9 +61,9 @@ export const Item_data = [
   {
     "_id": "6805ee7dd8f584af5da78d37",
     "title": "Acer Laptop",
-    "description": "<h1>Black Acer Aspire laptop with stickers on the lid.</h1>",
+    "description": "Black Acer Aspire laptop with stickers on the lid.",
     "category": "Electronics",
-    "image": "item_pic_1",
+    "image": item_pic_1,
     "createdAt": "2025-04-21T07:06:37.508Z",
     "updatedAt": "2025-04-24T08:26:29.750Z",
     "__v": 0,
@@ -76,9 +73,9 @@ export const Item_data = [
   {
     "_id": "6805ee7dd8f584af5da78d38",
     "title": "Water Bottle",
-    "description": "<h1>Blue Milton water bottle with scratches near the lid.</h1>",
+    "description": "Blue Milton water bottle with scratches near the lid.",
     "category": "Miscellaneous",
-    "image": "item_pic_4",
+    "image": item_pic_4,
     "createdAt": "2025-04-22T09:45:12.123Z",
     "updatedAt": "2025-04-22T09:45:12.123Z",
     "__v": 0,
@@ -88,9 +85,9 @@ export const Item_data = [
   {
     "_id": "6805ee7dd8f584af5da78d39",
     "title": "Aadhar Card",
-    "description": "<h1>ID card with name visible, belongs to Rekha </h1>",
+    "description": "ID card with name visible, belongs to Rekha ",
     "category": "ID & Cards",
-    "image": "item_pic_2",
+    "image": item_pic_2,
     "createdAt": "2025-04-23T10:12:56.123Z",
     "updatedAt": "2025-04-23T10:12:56.123Z",
     "__v": 0,
@@ -100,9 +97,9 @@ export const Item_data = [
   {
     "_id": "6805ee7dd8f584af5da78d40",
     "title": "Casio Scientific Calculator",
-    "description": "<h1>Casio fx-991ES calculator with initials 'RK' on the back.</h1>",
+    "description": "Casio fx-991ES calculator with initials 'RK' on the back.",
     "category": "Books & Stationery",
-    "image": "item_pic_5",
+    "image": item_pic_5,
     "createdAt": "2025-04-24T11:30:00.000Z",
     "updatedAt": "2025-04-24T11:30:00.000Z",
     "__v": 0,
@@ -112,9 +109,9 @@ export const Item_data = [
   {
     "_id": "6805ee7dd8f584af5da78d41",
     "title": "Black Backpack",
-    "description": "<h1>Backpack containing a notebook and charger.</h1>",
+    "description": "Backpack containing a notebook and charger.",
     "category": "Books & Stationery",
-    "image": "item_pic_6",
+    "image": item_pic_6,
     "createdAt": "2025-04-25T08:20:10.000Z",
     "updatedAt": "2025-04-25T08:20:10.000Z",
     "__v": 0,
@@ -124,9 +121,9 @@ export const Item_data = [
   {
     "_id": "6805ee7dd8f584af5da78d42",
     "title": "Silver Bracelet",
-    "description": "<h1>Simple silver bracelet engraved with the initials ‘S.A.’</h1>",
+    "description": "Simple silver bracelet engraved with the initials ‘S.A.’",
     "category": "Miscellaneous",
-    "image": "item_pic_3",
+    "image": item_pic_3,
     "createdAt": "2025-04-26T09:00:00.000Z",
     "updatedAt": "2025-04-26T09:00:00.000Z",
     "__v": 0,
@@ -136,9 +133,9 @@ export const Item_data = [
   {
     "_id": "6805ee7dd8f584af5da78d43",
     "title": "Keychain with Keys",
-    "description": "<h1>Set of two keys on a keychain.</h1>",
+    "description": "Set of two keys on a keychain.",
     "category": "Keys",
-    "image": "item_pic_7",
+    "image": item_pic_7,
     "createdAt": "2025-04-27T07:40:00.000Z",
     "updatedAt": "2025-04-27T07:40:00.000Z",
     "__v": 0,
@@ -153,7 +150,7 @@ export const Item_data = [
 export const comments_data = [
         {
             "_id": "6811ed9e7836a82ba747cb25",
-            "blog": blog_data[0],
+            "blog": Item_data[0],
             "name": "Michael Scott",
             "content": "This is my new comment",
             "isApproved": false,
@@ -163,7 +160,7 @@ export const comments_data = [
         },
         {
             "_id": "6810a752fbb942aa7cbf4adb",
-            "blog": blog_data[1],
+            "blog": Item_data[1],
             "name": "John Doe",
             "content": "This is a nice blog",
             "isApproved": false,
@@ -173,7 +170,7 @@ export const comments_data = [
         },
         {
             "_id": "680779aebef75c08f8b4898f",
-            "blog": blog_data[2],
+            "blog": Item_data[2],
             "name": "Jack London",
             "content": "Hi this blog is must to read",
             "isApproved": true,
@@ -183,7 +180,7 @@ export const comments_data = [
         },
         {
             "_id": "680770aeb2897e5c28bf9b26",
-            "blog": blog_data[3],
+            "blog": Item_data[3],
             "name": "Sam Smith",
             "content": "This is the best blog, everybody should read it",
             "isApproved": false,
@@ -193,7 +190,7 @@ export const comments_data = [
         },
         {
             "_id": "68076468e32055c94a696cf5",
-            "blog": blog_data[4],
+            "blog": Item_data[4],
             "name": "Peter Lawrence",
             "content": "Honestly, I did not expect this to work, but it totally did. Saved my project!",
             "isApproved": true,
@@ -207,7 +204,7 @@ export const dashboard_data = {
     "blogs": 10,
     "comments": 5,
     "drafts": 0,
-    "recentBlogs": blog_data.slice(0, 5),
+    "recentBlogs": Item_data.slice(0, 5),
 }
 
 export const footer_data = [
