@@ -151,8 +151,8 @@ export const comments_data = [
         {
             "_id": "6811ed9e7836a82ba747cb25",
             "blog": Item_data[0],
-            "name": "Michael Scott",
-            "content": "This is my new comment",
+            "name": "Rani Mukarji",
+            "content": "This is mine",
             "isApproved": false,
             "createdAt": "2025-04-30T09:30:06.918Z",
             "updatedAt": "2025-04-30T09:30:06.918Z",
@@ -162,7 +162,7 @@ export const comments_data = [
             "_id": "6810a752fbb942aa7cbf4adb",
             "blog": Item_data[1],
             "name": "John Doe",
-            "content": "This is a nice blog",
+            "content": "Please contact me.",
             "isApproved": false,
             "createdAt": "2025-04-29T10:17:54.832Z",
             "updatedAt": "2025-04-29T10:17:54.832Z",
@@ -172,7 +172,7 @@ export const comments_data = [
             "_id": "680779aebef75c08f8b4898f",
             "blog": Item_data[2],
             "name": "Jack London",
-            "content": "Hi this blog is must to read",
+            "content": "Hi! Did anyone claim this?",
             "isApproved": true,
             "createdAt": "2025-04-22T11:12:46.547Z",
             "updatedAt": "2025-04-22T11:13:10.015Z",
@@ -182,7 +182,7 @@ export const comments_data = [
             "_id": "680770aeb2897e5c28bf9b26",
             "blog": Item_data[3],
             "name": "Sam Smith",
-            "content": "This is the best blog, everybody should read it",
+            "content": "Hola! This is mine! I lost it yesterday",
             "isApproved": false,
             "createdAt": "2025-04-22T10:34:22.020Z",
             "updatedAt": "2025-04-22T10:34:22.020Z",
@@ -192,7 +192,7 @@ export const comments_data = [
             "_id": "68076468e32055c94a696cf5",
             "blog": Item_data[4],
             "name": "Peter Lawrence",
-            "content": "Honestly, I did not expect this to work, but it totally did. Saved my project!",
+            "content": "Honestly, I did not expect to find it so fast. Thanks a lot!",
             "isApproved": true,
             "createdAt": "2025-04-22T09:42:00.444Z",
             "updatedAt": "2025-04-22T10:24:55.626Z",
@@ -201,10 +201,10 @@ export const comments_data = [
     ]
 
 export const dashboard_data = {
-    "blogs": 10,
+    "Items": 7,
     "comments": 5,
     "drafts": 0,
-    "recentBlogs": Item_data.slice(0, 5),
+    "recentItems": Item_data.slice(0, 5),
 }
 
 export const footer_data = [
