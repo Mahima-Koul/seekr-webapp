@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Gravitas+One&family=IM+Fell+French+Canon:ital@0;1&family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+* {
+  font-family: "Gravitas One", serif;
+}
+::-webkit-scrollbar{
+  display: none;
+}
+
+
+@theme {
+  --color-primary: #5044E5;
+}
