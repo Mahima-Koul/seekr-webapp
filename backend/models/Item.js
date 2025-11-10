@@ -8,8 +8,7 @@ const itemSchema = new mongoose.Schema(
     date: { type: Date, required: true },
     contactInfo: { type: String, required: true },
     image: { type: String, default: "" },
-    status: { type: String, enum: ["Open", "Resolved"], default: "Open" },
-    postedBy: { type: String, default: "Anonymous" }, // or user reference later
+    resolved: { type: Boolean, default: false }, // or user reference later
   },
   { timestamps: true }
 );

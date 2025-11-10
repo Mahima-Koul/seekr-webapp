@@ -1,6 +1,6 @@
 import fs from 'fs'
 import imagekit from '../configs/imageKit.js'
-import Item from '../models/Item.js'
+import Item from '../models/item.js'
 
 export const addItem= async(req, res)=>{
     try {
@@ -37,5 +37,49 @@ export const addItem= async(req, res)=>{
     } catch (error) {
        res.json({success: false, message: error.message})
  
+    }
+}
+
+export const getAllItems= async(req, res)=>{
+    try {
+        const items= await Item.find({resolved: false})
+        res.json({success: true, items})
+    } catch (error) {
+        res.json({success: false, message: error.message})
+    }
+}
+
+export const getItemById= async(req,res)=>{
+    try {
+        const {itemId}=res.parse
+        const item= await Item.findById(itemId)
+        if(!blog){
+            res.json({success: false, message: "Item not found"})
+        }
+        res.json({success: true, item})
+    } catch (error) {
+        res.json({success: false, message: error.message})
+    }
+}
+
+export const deleteItemById= async(req,res)=>{
+    try {
+        const {id}=res.body
+        await Item.findByIdAndDelete(id)
+        res.json({success: true, message: "Blog deleted successfully"})
+    } catch (error) {
+        res.json({success: false, message: error.message})
+    }
+}
+
+export const toggleResolved = async(req, res)=>{
+    try {
+        const {id}= req.body
+        const item= await Item.findById(id)
+        item.resolved= !item.resolved
+        await blog.save()
+        res.json({success: true, message: "Item status updated"}) 
+    } catch (error) {
+        res.json({success: false, message: error.message})
     }
 }
