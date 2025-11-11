@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import { useAppContext } from "./context/AppContext";
 import FoundItem from "./pages/FoundItem";
 import Profile from "./pages/Profile";
+import Notifications from "./pages/Notifications";
 
 export default function App() {
   const {token}= useAppContext()
@@ -28,6 +29,7 @@ export default function App() {
         {/* Dashboard Layout Routes */}
         <Route path="/" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="notifications" element={<Notifications />} />
           <Route path="report-lost" element={<ReportLost />} />
           <Route path="found-item" element={<FoundItem />} />
           <Route path="items-list" element={<ItemsList />} />

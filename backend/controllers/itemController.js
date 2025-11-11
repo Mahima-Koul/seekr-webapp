@@ -4,11 +4,11 @@ import Item from '../models/item.js'
 
 export const addItem= async(req, res)=>{
     try {
-        const { title, description, category, date, location, contactInfo}= JSON.parse(req.body.item)
+        const { title, description, category,type, date, location, contactInfo}= JSON.parse(req.body.item)
         const imageFile= req.file
 
         //check if all fields are present
-        if(!title || !description || !category|| !location|| !date){
+        if(!title || !description || !category||!type||!location|| !date){
             return res.json({success: false, message: "Missing required fields"})
         }
 
@@ -31,7 +31,7 @@ export const addItem= async(req, res)=>{
             ]
         })
         const image= optimisedImageUrl
-        await Item.create({title, description, category, date, location, contactInfo, image, resolved: false })
+        await Item.create({title, description, category,type, date, location, contactInfo, image, resolved: false })
         res.json({success: true, message: "Item added successfully"})
 
     } catch (error) {
@@ -49,18 +49,20 @@ export const getAllItems= async(req, res)=>{
     }
 }
 
-export const getItemById= async(req,res)=>{
-    try {
-        const {itemId}=req.params
-        const item= await Item.findById(itemId)
-        if(!item){
-            res.json({success: false, message: "Item not found"})
-        }
-        res.json({success: true, item})
-    } catch (error) {
-        res.json({success: false, message: error.message})
+export const getItemById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Item.findById(id);
+
+    if (!item) {
+      return res.json({ success: false, message: "Item not found" }); // return stops execution
     }
-}
+
+    res.json({ success: true, item });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
 
 export const deleteItemById= async(req,res)=>{
     try {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { User, Bell, LayoutDashboard, PlusCircle, Search } from "lucide-react";
-
+import logo from '../assets/logo.svg';
 export default function Layout() {
   const location = useLocation();
 
@@ -17,7 +17,7 @@ export default function Layout() {
       {/* Sidebar */}
       <nav className="w-64 bg-white shadow-md p-6 flex flex-col justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-indigo-700 mb-10">Seekr</h1>
+          <img src={logo} alt="Seekr Logo" className="w-30 mb-6" />
           <div className="flex flex-col gap-2">
             <Link to="/dashboard" className={linkClass("/dashboard")}>
               <LayoutDashboard size={18} />
