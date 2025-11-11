@@ -7,7 +7,7 @@ const itemRouter= express.Router()
 
 itemRouter.post("/add",upload.single('image'), addItem)
 itemRouter.get("/all", getAllItems)
-itemRouter.get("/:itemId", getItemById)
+itemRouter.get("/:id", getItemById)
 itemRouter.post("/delete", auth,deleteItemById)
 itemRouter.post("/toggle-resolve", auth, toggleResolved)
 
