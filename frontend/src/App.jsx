@@ -28,7 +28,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="report-lost" element={<ReportLost />} />
-          <Route path="found-item" element={<FoundItem />} />
+          <Route path="found-tem" element={<FoundItem />} />
           <Route path="items-list" element={<ItemsList />} />
           <Route path="my-claims" element={<MyClaims />} />
         </Route>

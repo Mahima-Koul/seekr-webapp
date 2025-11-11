@@ -35,7 +35,7 @@ export default function ReportLost() {
 
     try {
       setLoading(true);
-      const { data } = await axios.post("/api/items/add", formData, {
+      const { data } = await axios.post("/api/item/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

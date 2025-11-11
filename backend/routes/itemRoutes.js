@@ -5,7 +5,7 @@ import auth from '../middleware/auth.js'
 
 const itemRouter= express.Router()
 
-itemRouter.post("/add",upload.single('image'),auth, addItem)
+itemRouter.post("/add",upload.single('image'), addItem)
 itemRouter.get("/all", getAllItems)
 itemRouter.get("/:itemId", getItemById)
 itemRouter.post("/delete", auth,deleteItemById)

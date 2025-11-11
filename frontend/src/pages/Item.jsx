@@ -5,6 +5,7 @@ import Navbar from '../components/navbar.jsx'
 import Moment from 'moment';
 import Loader from '../components/Loader.jsx';
 import { useAppContext } from '../context/AppContext.jsx';
+import toast from 'react-hot-toast';
 
 const Item = () => {
   const {id} = useParams();
@@ -17,23 +18,34 @@ const Item = () => {
   
   
   const fetchItemData = async () => {
-    const cleanId = id.replace('id=', '');
-    console.log("Clean ID:", cleanId);
-    
-    const itemData = Item_data.find((item) => item._id === cleanId);
-    
-    console.log("Found item:", itemData);
-    setData(itemData);
-    
-    
-    if (itemData) {
-      const itemComments = comments_data.filter((comment) => comment.blog._id === itemData._id);
-      console.log("Found comments:", itemComments);
-      setComments(itemComments);
+    try {
+      const {data}= await axios.get(`/api/item/${id}`)
+      data.success? setData(data.item):toast.error(data.message)
+    } catch (error) {
+      toast.error(error.message)
     }
   }
-  const addComment =async(e) => {
-    e.preventDefault();}
+  const addComment = async (e) => {
+  e.preventDefault();
+  try {
+    const { data } = await axios.post('/api/item/add-comment', {
+      item: id,
+      name,
+      content,
+    });
+
+    if (data.success) {
+      toast.success(data.message);
+      setName('');
+      setContent('');
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    toast.error(error.message);
+  }
+};
+
   
   React.useEffect(() => {
     fetchItemData();
