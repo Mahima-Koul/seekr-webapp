@@ -1,19 +1,37 @@
 import React, { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
+
     if (!email || !password) {
-      setError('Please fill in all fields.');
+      setError("Please fill in all fields.");
       return;
     }
-    // Add authentication logic here
-    alert('Logged in!');
+
+    try {
+      const { data } = await axios.post("/api/admin/login", { email, password });
+
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        axios.defaults.headers.common["Authorization"] = data.token;
+        toast.success("Logged in successfully!");
+        navigate("/dashboard");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
   };
 
   return (
@@ -38,15 +56,13 @@ export default function Login() {
         )}
 
         <div>
-          <label className="block font-medium text-gray-700 mb-1">
-            Email
-          </label>
+          <label className="block font-medium text-gray-700 mb-1">Email</label>
           <input
             className="w-full border-b border-gray-300 focus:outline-none p-2 bg-transparent placeholder-gray-400"
             type="email"
             placeholder="your email id"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -59,7 +75,7 @@ export default function Login() {
             type="password"
             placeholder="your password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
@@ -73,3 +89,4 @@ export default function Login() {
     </div>
   );
 }
+

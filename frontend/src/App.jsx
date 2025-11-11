@@ -10,8 +10,10 @@ import MyClaims from "./pages/MyClaims";
 import Home from "./pages/Home";
 import Item from "./pages/Item";
 import Login from "./pages/Login";
+import { useAppContext } from "./context/AppContext";
 
 export default function App() {
+  const {token}= useAppContext()
   return (
     <div>
       <Toaster />
