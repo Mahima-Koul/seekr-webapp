@@ -55,7 +55,7 @@ export default function FoundItem() {
 
   return (
     <div className="bg-white shadow-xl rounded-xl p-8 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-green-600 mb-2">Report Found Item</h2>
+      <h2 className="text-2xl font-bold text-black-600 mb-2">Report Found Item</h2>
       <p className="text-gray-500 mb-6 text-sm">
         Found something? Help reunite it with its owner!
       </p>
