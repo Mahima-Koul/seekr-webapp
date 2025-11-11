@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Item from "./pages/Item";
 import Login from "./pages/Login";
 import { useAppContext } from "./context/AppContext";
+import FoundItem from "./pages/FoundItem";
 
 export default function App() {
   const {token}= useAppContext()
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="report-lost" element={<ReportLost />} />
+          <Route path="found-item" element={<FoundItem />} />
           <Route path="items-list" element={<ItemsList />} />
           <Route path="my-claims" element={<MyClaims />} />
         </Route>

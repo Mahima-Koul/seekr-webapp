@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export default function ReportLost() {
+export default function FoundItem() {
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -26,7 +26,7 @@ export default function ReportLost() {
 
     const itemData = {
       ...form,
-      category: "Lost",
+      category: "Found",
     };
 
     const formData = new FormData();
@@ -40,7 +40,7 @@ export default function ReportLost() {
       });
 
       if (data.success) {
-        toast.success("Lost item reported!");
+        toast.success("Found item reported!");
         setForm({ title: "", description: "", location: "", date: "", contactInfo: "" });
         setImage(null);
       } else {
@@ -55,9 +55,9 @@ export default function ReportLost() {
 
   return (
     <div className="bg-white shadow-xl rounded-xl p-8 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-indigo-600 mb-2">Report Lost Item</h2>
+      <h2 className="text-2xl font-bold text-green-600 mb-2">Report Found Item</h2>
       <p className="text-gray-500 mb-6 text-sm">
-        Fill the details below to report your lost item.
+        Found something? Help reunite it with its owner!
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -82,7 +82,7 @@ export default function ReportLost() {
           value={form.location}
           onChange={handleChange}
           className="border p-3 rounded-md"
-          placeholder="Last seen location"
+          placeholder="Found location"
           required
         />
         <input
@@ -111,9 +111,9 @@ export default function ReportLost() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-indigo-600 text-white rounded-md py-2 font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
+          className="bg-green-600 text-white rounded-md py-2 font-semibold hover:bg-green-700 transition disabled:opacity-50"
         >
-          {loading ? "Reporting..." : "Submit Report"}
+          {loading ? "Submitting..." : "Submit Report"}
         </button>
       </form>
     </div>

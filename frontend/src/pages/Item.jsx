@@ -4,9 +4,12 @@ import { Item_data, assets, comments_data } from '../assets/assets';
 import Navbar from '../components/navbar.jsx'
 import Moment from 'moment';
 import Loader from '../components/Loader.jsx';
+import { useAppContext } from '../context/AppContext.jsx';
 
 const Item = () => {
   const {id} = useParams();
+  const {axios} = useAppContext()
+
   const [data, setData] = React.useState(null);
   const [comments, setComments] = React.useState([]);
   const [name, setName] = React.useState('');

@@ -17,7 +17,7 @@ export const addItem= async(req, res)=>{
         //upload image to ImageKit
         const response= await imagekit.upload({
             file: fileBuffer,
-            fileName: imageFile.originalName,
+            fileName: imageFile.originalname,
             folder: "/items"
         })
 
@@ -31,7 +31,7 @@ export const addItem= async(req, res)=>{
             ]
         })
         const image= optimisedImageUrl
-        await Item.create({title, description, category, date, location, contactInfo, image })
+        await Item.create({title, description, category, date, location, contactInfo, image, resolved: false })
         res.json({success: true, message: "Item added successfully"})
 
     } catch (error) {
@@ -51,9 +51,9 @@ export const getAllItems= async(req, res)=>{
 
 export const getItemById= async(req,res)=>{
     try {
-        const {itemId}=res.parse
+        const {itemId}=req.params
         const item= await Item.findById(itemId)
-        if(!blog){
+        if(!item){
             res.json({success: false, message: "Item not found"})
         }
         res.json({success: true, item})
@@ -64,9 +64,9 @@ export const getItemById= async(req,res)=>{
 
 export const deleteItemById= async(req,res)=>{
     try {
-        const {id}=res.body
+        const {id}=req.body
         await Item.findByIdAndDelete(id)
-        res.json({success: true, message: "Blog deleted successfully"})
+        res.json({success: true, message: "Item deleted successfully"})
     } catch (error) {
         res.json({success: false, message: error.message})
     }
@@ -77,7 +77,7 @@ export const toggleResolved = async(req, res)=>{
         const {id}= req.body
         const item= await Item.findById(id)
         item.resolved= !item.resolved
-        await blog.save()
+        await item.save()
         res.json({success: true, message: "Item status updated"}) 
     } catch (error) {
         res.json({success: false, message: error.message})
