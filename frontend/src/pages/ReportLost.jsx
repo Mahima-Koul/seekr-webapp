@@ -91,7 +91,7 @@ export default function ReportLost() {
           <option value="">Select Type</option>
           <option value="Electronics">Electronics</option>
           <option value="ID & Cards">ID & Cards</option>
-          <option value="Books and Stationery">Books and Stationery</option>
+          <option value="Books & Stationery">Books & Stationery</option>
           <option value="Other">Other</option>
         </select>
 
