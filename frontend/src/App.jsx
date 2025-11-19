@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import Layout from "./components/Layout";
@@ -10,13 +10,20 @@ import MyClaims from "./pages/MyClaims";
 import Home from "./pages/Home";
 import Item from "./pages/Item";
 import Login from "./pages/Login";
-import { useAppContext } from "./context/AppContext";
 import FoundItem from "./pages/FoundItem";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
+import { useAppContext } from "./context/AppContext";
 
 export default function App() {
-  const {token}= useAppContext()
+  const { token } = useAppContext();
+
+  // Small ProtectedRoute wrapper (inline)
+  const ProtectedRoute = ({ children }) => {
+    if (!token) return <Navigate to="/login" replace />;
+    return children;
+  };
+
   return (
     <div>
       <Toaster />
@@ -26,8 +33,15 @@ export default function App() {
         <Route path="/item/:id" element={<Item />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Dashboard Layout Routes */}
-        <Route path="/" element={<Layout />}>
+        {/* Protected Dashboard Routes */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="report-lost" element={<ReportLost />} />
@@ -40,4 +54,3 @@ export default function App() {
     </div>
   );
 }
-

@@ -29,7 +29,7 @@ export const AppProvider =({children})=>{
         const token= localStorage.getItem('token')
         if(token){
             setToken(token)
-            axios.defaults.headers.common['Authorization']=`${token}`
+            axios.defaults.headers.common['Authorization']=`Bearer ${token}`
         }
     },[])
 

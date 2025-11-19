@@ -1,6 +1,6 @@
 import fs from 'fs'
 import imagekit from '../configs/imageKit.js'
-import Item from '../models/item.js'
+import Item from '../models/Item.js'
 
 export const addItem= async(req, res)=>{
     try {
@@ -64,15 +64,21 @@ export const getItemById = async (req, res) => {
   }
 };
 
-export const deleteItemById= async(req,res)=>{
-    try {
-        const {id}=req.body
-        await Item.findByIdAndDelete(id)
-        res.json({success: true, message: "Item deleted successfully"})
-    } catch (error) {
-        res.json({success: false, message: error.message})
+export const deleteItemById = async (req, res) => {
+  try {
+    const { id } = req.params; 
+    const deletedItem = await Item.findByIdAndDelete(id);
+
+    if (!deletedItem) {
+      return res.json({ success: false, message: "Item not found" });
     }
-}
+
+    res.json({ success: true, message: "Item deleted successfully" });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
 
 export const toggleResolved = async(req, res)=>{
     try {

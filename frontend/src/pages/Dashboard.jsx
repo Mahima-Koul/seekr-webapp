@@ -67,6 +67,8 @@ export default function YourActivity() {
           <div className="text-3xl font-bold text-gray-700">{resolvedCount}</div>
           <div className="text-gray-600 mt-1 font-medium">Resolved Cases</div>
         </div>
+
+
       </div>
 
       {/* --- RECENT ACTIVITY TABLE --- */}
