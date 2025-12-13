@@ -1,16 +1,137 @@
-# React + Vite
+# Lost & Found Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack Lost & Found application built to help users report lost items, post found items, and get notified when a potential match occurs.
 
-Currently, two official plugins are available:
+This project is being actively refactored and improved to follow clean architecture, proper authentication, and deployment-ready practices.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* User authentication (Signup & Login)
+* Create, read, update, and delete lost/found items
+* User-specific dashboards
+* Protected routes
+* Notification system (planned)
+* Clean REST API architecture
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠 Tech Stack
+
+### Frontend
+
+* React
+* JavaScript
+* Tailwind CSS
+
+### Backend
+
+* Node.js
+* Express.js
+* MongoDB (Mongoose)
+* JWT Authentication
+
+---
+
+## 📁 Project Structure
+
+```
+root/
+│
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── middleware/
+│   ├── server.js
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── services/
+│   │   └── App.jsx
+│   └── package.json
+│
+├── .gitignore
+└── README.md
+```
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone <repository-url>
+cd <project-folder>
+```
+
+---
+
+### 2️⃣ Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Start the backend server:
+
+```bash
+npm run dev
+```
+
+---
+
+### 3️⃣ Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+---
+
+## 🔐 Authentication Flow (Overview)
+
+1. User signs up with email and password
+2. Password is hashed and stored securely
+3. User logs in and receives a JWT token
+4. Token is stored on the client
+5. Protected routes verify the token via middleware
+
+---
+
+## 🔔 Notification System (Planned)
+
+* In-app notifications when a found item matches a lost item
+* Notifications stored in database
+* Displayed on user dashboard
+
+---
+
+## 🧠 Learning Goals
+
+* Understand full-stack authentication flow
+* Write clean, modular backend code
+* Refactor and understand existing codebase
+* Gain confidence in deploying real-world applications
+
+---
+
+## 📌 Notes
+
+* `node_modules` are intentionally ignored via `.gitignore`
+* This project was initially developed as a collaborative college project and is being refactored for individual understanding and production readiness
+
+---
+
+## 📜 License
+
+This project is for educational purposes.
