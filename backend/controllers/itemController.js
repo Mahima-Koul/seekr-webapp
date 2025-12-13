@@ -2,6 +2,7 @@ import fs from 'fs'
 import imagekit from '../configs/imageKit.js'
 import Item from '../models/Item.js'
 
+//Controller to handle adding a new item
 export const addItem= async(req, res)=>{
     try {
         const { title, description, category,type, date, location, contactInfo}= JSON.parse(req.body.item)
@@ -31,6 +32,8 @@ export const addItem= async(req, res)=>{
             ]
         })
         const image= optimisedImageUrl
+
+        //create new item in database
         await Item.create({title, description, category,type, date, location, contactInfo, image, resolved: false })
         res.json({success: true, message: "Item added successfully"})
 
@@ -40,6 +43,8 @@ export const addItem= async(req, res)=>{
     }
 }
 
+
+//Controller to get all unresolved items
 export const getAllItems= async(req, res)=>{
     try {
         const items= await Item.find({resolved: false})
@@ -49,6 +54,8 @@ export const getAllItems= async(req, res)=>{
     }
 }
 
+
+//Controller to get item by ID
 export const getItemById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -64,6 +71,8 @@ export const getItemById = async (req, res) => {
   }
 };
 
+
+//Controller to delete item by ID
 export const deleteItemById = async (req, res) => {
   try {
     const { id } = req.params; 
@@ -80,6 +89,8 @@ export const deleteItemById = async (req, res) => {
 };
 
 
+
+//Controller to toggle resolved status of an item
 export const toggleResolved = async(req, res)=>{
     try {
         const {id}= req.body

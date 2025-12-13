@@ -2,8 +2,10 @@ import express from 'express'
 import 'dotenv/config'
 import cors from 'cors'
 import connectDB from './configs/db.js'
-import adminRouter from './routes/adminRoutes.js'
+import authRouter from './routes/authRoutes.js'
 import itemRouter from './routes/itemRoutes.js'
+import auth from './middleware/auth.js' 
+import { protect } from "./middleware/auth.js";
 
 const app= express()
 
@@ -17,13 +19,23 @@ app.use(express.json())
 app.get("/", (req,res)=>{
     res.send("API is working!")
 })
-app.use("/api/admin", adminRouter)
+
+
+app.get("/api/protected-test", protect, (req, res) => {
+  res.json({
+    success: true,
+    message: "You are authorized",
+    user: req.user
+  });
+});
+
+app.use("/api/auth", authRouter)
 app.use("/api/item", itemRouter)
 
 const PORT= process.env.PORT || 3000;
 
 app.listen(PORT, ()=>{
-    console.log(`server is running on port ${PORT}`)
+    console.log(`Server is running on port ${PORT}`)
 })
 
 export default app;

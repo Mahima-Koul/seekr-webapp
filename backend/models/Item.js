@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+
+
+//Item Schema defines the structure of lost and found items in the database
 const itemSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
@@ -14,5 +17,7 @@ const itemSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+//Create and export the Item model based on the itemSchema
 const Item=mongoose.model('item', itemSchema)
 export default Item
