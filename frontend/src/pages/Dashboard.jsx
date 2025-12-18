@@ -11,6 +11,13 @@ export default function YourActivity() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    navigate("/login", { replace: true });
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
   // Fetch all items
   const fetchActivities = async () => {
     try {

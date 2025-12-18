@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import Layout from "./components/Layout";
@@ -13,27 +13,22 @@ import Login from "./pages/Login";
 import FoundItem from "./pages/FoundItem";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
-import { useAppContext } from "./context/AppContext";
+import Signup from "./pages/Signup";
+import ProtectedRoute from "../ProtectedRoute";
 
 export default function App() {
-  const { token } = useAppContext();
-
-  // Small ProtectedRoute wrapper (inline)
-  const ProtectedRoute = ({ children }) => {
-    if (!token) return <Navigate to="/login" replace />;
-    return children;
-  };
-
   return (
     <div>
       <Toaster />
+
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/item/:id" element={<Item />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
-        {/* Protected Dashboard Routes */}
+        {/* Protected Routes */}
         <Route
           path="/"
           element={

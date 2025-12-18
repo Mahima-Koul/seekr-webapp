@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function Profile() {
   const [user, setUser] = useState({
-    name: "Mahima Koul",
-    email: "mahimakoul64@gmail.com",
-    role: "Admin",
-    joined: "August 2025",
+    name: "",
+    email: "",
+    role: "",
+    joined: "",
   });
 
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState(user);
+
+  useEffect(() => {
+    // Get user info from localStorage after login
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser) {
+      // If you want, you can also fetch 'joined' date from backend
+      setUser({ ...savedUser, joined: "August 2025" });
+      setFormData({ ...savedUser, joined: "August 2025" });
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,7 +29,14 @@ export default function Profile() {
     e.preventDefault();
     setUser(formData);
     setEditing(false);
-    
+    // Optionally update backend here
+    localStorage.setItem("user", JSON.stringify(formData));
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/login"; // redirect to login page
   };
 
   return (
@@ -43,10 +60,7 @@ export default function Profile() {
       </div>
 
       {/* Editable Form */}
-      <form
-        onSubmit={handleSave}
-        className="flex flex-col gap-4 text-gray-800"
-      >
+      <form onSubmit={handleSave} className="flex flex-col gap-4 text-gray-800">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-sm text-gray-500 block mb-1">Full Name</label>
@@ -119,10 +133,11 @@ export default function Profile() {
 
       {/* Account Section */}
       <div className="mt-10 border-t pt-6">
-        <h3 className="text-lg font-semibold mb-3 text-gray-900">
-          Account Settings
-        </h3>
-        <button className="px-4 py-2 border border-red-500 text-red-600 rounded-md hover:bg-red-50 transition-all">
+        <h3 className="text-lg font-semibold mb-3 text-gray-900">Account Settings</h3>
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 border border-red-500 text-red-600 rounded-md hover:bg-red-50 transition-all"
+        >
           Log Out
         </button>
       </div>
