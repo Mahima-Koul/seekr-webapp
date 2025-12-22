@@ -1,95 +1,130 @@
-import fs from 'fs'
-import imagekit from '../configs/imageKit.js'
-import Item from '../models/Item.js'
+import fs from "fs";
+import imagekit from "../configs/imageKit.js";
+import Item from "../models/Item.js";
 
-//Controller to handle adding a new item
-export const addItem= async(req, res)=>{
-    try {
-        const { title, description, category,type, date, location, contactInfo}= JSON.parse(req.body.item)
-        const imageFile= req.file
+/* =========================
+   ADD ITEM
+   ========================= */
+export const addItem = async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      category,
+      type,
+      date,
+      location,
+      contactInfo
+    } = JSON.parse(req.body.item);
 
-        //check if all fields are present
-        if(!title || !description || !category||!type||!location|| !date){
-            return res.json({success: false, message: "Missing required fields"})
-        }
+    const imageFile = req.file;
 
-        const fileBuffer= fs.readFileSync(imageFile.path)
-
-        //upload image to ImageKit
-        const response= await imagekit.upload({
-            file: fileBuffer,
-            fileName: imageFile.originalname,
-            folder: "/items"
-        })
-
-        //optimize through imagekit URL transformation
-        const optimisedImageUrl= imagekit.url({
-            path: response.filePath,
-            transformation: [
-                {quality: 'auto'},  //auto compression
-                {format: 'webp'},   //convert to modern format
-                {width: '1280'}     //width resized 
-            ]
-        })
-        const image= optimisedImageUrl
-
-        //create new item in database
-        await Item.create({title, description, category,type, date, location, contactInfo, image, resolved: false })
-        res.json({success: true, message: "Item added successfully"})
-
-    } catch (error) {
-       res.json({success: false, message: error.message})
- 
+    if (!title || !description || !category || !type || !location || !date) {
+      return res.json({ success: false, message: "Missing required fields" });
     }
-}
 
-// Controller to search for items by title or description
+    const itemDate = new Date(date);
+    if (isNaN(itemDate.getTime())) {
+      return res.json({ success: false, message: "Invalid date" });
+    }
+
+    const fileBuffer = fs.readFileSync(imageFile.path);
+
+    const uploadResponse = await imagekit.upload({
+      file: fileBuffer,
+      fileName: imageFile.originalname,
+      folder: "/items"
+    });
+
+    const image = imagekit.url({
+      path: uploadResponse.filePath,
+      transformation: [
+        { quality: "auto" },
+        { format: "webp" },
+        { width: "1280" }
+      ]
+    });
+
+    await Item.create({
+      title,
+      description,
+      category,
+      type,
+      date: itemDate,
+      location,
+      contactInfo,
+      image,
+      resolved: false,
+      createdBy: req.user._id   // ⭐ MULTI USER LINK
+    });
+
+    res.json({ success: true, message: "Item added successfully" });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+/* =========================
+   SEARCH ITEMS (PUBLIC)
+   ========================= */
 export const searchItems = async (req, res) => {
   try {
     const query = req.query.q?.trim();
     if (!query) {
-      return res.status(400).json({ success: false, message: "Search query is missing" });
+      return res.json({ success: false, message: "Search query missing" });
     }
 
-    // Search by title or description (case-insensitive)
     const items = await Item.find({
+      resolved: false,
       $or: [
-        { title: { $regex: query, $options: 'i' } },
-        { description: { $regex: query, $options: 'i' } }
+        { title: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } }
       ]
-    });
-
-    if (items.length === 0) {
-      return res.json({ success: true, message: "No matching items found", items: [] });
-    }
+    }).sort({ date: -1 });
 
     res.json({ success: true, items });
   } catch (error) {
-    console.error("Search error:", error);
-    res.status(500).json({ success: false, message: "Server error during search" });
+    res.json({ success: false, message: "Search failed" });
   }
 };
 
+/* =========================
+   GET ALL UNRESOLVED ITEMS (PUBLIC FEED)
+   ========================= */
+export const getAllItems = async (req, res) => {
+  try {
+    const items = await Item.find({ resolved: false })
+      .sort({ date: -1 });
 
-//Controller to get all unresolved items
-export const getAllItems= async(req, res)=>{
-    try {
-        const items= await Item.find({resolved: false})
-        res.json({success: true, items})
-    } catch (error) {
-        res.json({success: false, message: error.message})
-    }
-}
+    res.json({ success: true, items });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
 
+/* =========================
+   GET LOGGED-IN USER ITEMS
+   ========================= */
+export const getMyItems = async (req, res) => {
+  try {
+    const items = await Item.find({ user: req.user.id })
+      .sort({ date: -1 });
 
-//Controller to get item by ID
+    res.json({ success: true, items });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+/* =========================
+   GET ITEM BY ID
+   ========================= */
 export const getItemById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const item = await Item.findById(id);
+    const item = await Item.findById(req.params.id);
 
     if (!item) {
-      return res.json({ success: false, message: "Item not found" }); // return stops execution
+      return res.json({ success: false, message: "Item not found" });
     }
 
     res.json({ success: true, item });
@@ -98,34 +133,56 @@ export const getItemById = async (req, res) => {
   }
 };
 
-
-//Controller to delete item by ID
+/* =========================
+   DELETE ITEM (OWNER ONLY)
+   ========================= */
 export const deleteItemById = async (req, res) => {
   try {
-    const { id } = req.params; 
-    const deletedItem = await Item.findByIdAndDelete(id);
+    const item = await Item.findById(req.params.id);
 
-    if (!deletedItem) {
+    if (!item) {
       return res.json({ success: false, message: "Item not found" });
     }
 
+    if (item.user.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized"
+      });
+    }
+
+    await item.deleteOne();
     res.json({ success: true, message: "Item deleted successfully" });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 };
 
+/* =========================
+   TOGGLE RESOLVED (OWNER ONLY)
+   ========================= */
+export const toggleResolved = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const item = await Item.findById(id);
 
-
-//Controller to toggle resolved status of an item
-export const toggleResolved = async(req, res)=>{
-    try {
-        const {id}= req.body
-        const item= await Item.findById(id)
-        item.resolved= !item.resolved
-        await item.save()
-        res.json({success: true, message: "Item status updated"}) 
-    } catch (error) {
-        res.json({success: false, message: error.message})
+    if (!item) {
+      return res.json({ success: false, message: "Item not found" });
     }
-}
+
+    if (item.user.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized"
+      });
+    }
+
+    item.resolved = !item.resolved;
+    await item.save();
+
+    res.json({ success: true, message: "Item status updated" });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+

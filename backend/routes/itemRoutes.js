@@ -3,10 +3,11 @@ import express from 'express'
 import { addItem,searchItems, deleteItemById, getAllItems, getItemById, toggleResolved } from '../controllers/itemController.js'
 import upload from '../middleware/multer.js'
 import auth from '../middleware/auth.js'
+import protect from '../middleware/auth.js'
 
 const itemRouter= express.Router()
 
-itemRouter.post("/add",upload.single('image'), addItem)
+itemRouter.post("/add",protect, upload.single('image'), addItem)
 //updated and added search  
 itemRouter.get('/search', searchItems);
 

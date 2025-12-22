@@ -13,6 +13,11 @@ const itemSchema = new mongoose.Schema(
     contactInfo: { type: String, required: true },
     image: { type: String, default: "" },
     resolved: { type: Boolean, default: false }, // or user reference later
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );
