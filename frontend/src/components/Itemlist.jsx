@@ -13,7 +13,8 @@ const Itemlist = () => {
     if (input === '') {
       return items
     }
-    return items.filter((item) => item.title.toLowerCase().includes(input.toLowerCase()) || items.category.toLowerCase().includes(input.toLowerCase()))
+    {/*mage chnges here added item.name ||'' and did item.category instaead of items.catgory */}
+    return items.filter((item) => (item.title || item.name || '').toLowerCase().includes(input.toLowerCase()) || item.category.toLowerCase().includes(input.toLowerCase()))
   }
 
   return (

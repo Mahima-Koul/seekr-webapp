@@ -43,6 +43,33 @@ export const addItem= async(req, res)=>{
     }
 }
 
+// Controller to search for items by title or description
+export const searchItems = async (req, res) => {
+  try {
+    const query = req.query.q?.trim();
+    if (!query) {
+      return res.status(400).json({ success: false, message: "Search query is missing" });
+    }
+
+    // Search by title or description (case-insensitive)
+    const items = await Item.find({
+      $or: [
+        { title: { $regex: query, $options: 'i' } },
+        { description: { $regex: query, $options: 'i' } }
+      ]
+    });
+
+    if (items.length === 0) {
+      return res.json({ success: true, message: "No matching items found", items: [] });
+    }
+
+    res.json({ success: true, items });
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).json({ success: false, message: "Server error during search" });
+  }
+};
+
 
 //Controller to get all unresolved items
 export const getAllItems= async(req, res)=>{
