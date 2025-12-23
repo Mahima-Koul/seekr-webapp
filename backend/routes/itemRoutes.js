@@ -1,19 +1,16 @@
 import express from 'express'
-//here I imported searchItems
-import { addItem,searchItems, deleteItemById, getAllItems, getItemById, toggleResolved } from '../controllers/itemController.js'
+import { addItem,searchItems, deleteItemById, getAllItems, getItemById, toggleResolved, getMyItems } from '../controllers/itemController.js'
 import upload from '../middleware/multer.js'
-import auth from '../middleware/auth.js'
 import protect from '../middleware/auth.js'
 
 const itemRouter= express.Router()
 
-itemRouter.post("/add",protect, upload.single('image'), addItem)
-//updated and added search  
-itemRouter.get('/search', searchItems);
-
-itemRouter.get("/all", getAllItems)
-itemRouter.get("/:id", getItemById)
+itemRouter.post("/add",protect, upload.single('image'), addItem)  //adding an item
+itemRouter.get('/search', searchItems);  //searching an item
+itemRouter.get("/myitems", protect, getMyItems)  
+itemRouter.get("/all", getAllItems)  //getting all global items
+itemRouter.get("/:id", getItemById)   //getting an item by id
 itemRouter.post("/delete/:id",deleteItemById)
-itemRouter.post("/toggle-resolve", auth, toggleResolved)
+itemRouter.post("/toggle-resolve", protect, toggleResolved)
 
 export default itemRouter

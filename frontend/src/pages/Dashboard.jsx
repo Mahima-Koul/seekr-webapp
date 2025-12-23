@@ -7,7 +7,7 @@ import Moment from "moment";
 
 export default function YourActivity() {
   const navigate = useNavigate();
-  const { axios } = useAppContext();
+  const { axios, token } = useAppContext();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -18,11 +18,11 @@ export default function YourActivity() {
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
-  // Fetch all items
+  // Fetch all items of the user
   const fetchActivities = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("/api/item/all"); // correct backend route
+      const { data } = await axios.get("/api/item/myitems"); 
       if (data.success) setActivities(data.items);
       else toast.error(data.message);
     } catch (error) {
@@ -35,11 +35,13 @@ export default function YourActivity() {
   // Toggle resolved status
   const handleToggleResolved = async (id) => {
     try {
+      console.log("checkpoint 1");
       const { data } = await axios.post("/api/item/toggle-resolve", { id });
       if (data.success) {
         toast.success(data.message);
         fetchActivities();
       } else {
+        console.log("toggleResolved response:", data);
         toast.error(data.message);
       }
     } catch (error) {
@@ -47,9 +49,12 @@ export default function YourActivity() {
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
+  if (token) {
     fetchActivities();
-  }, []);
+  }
+}, [token]);
+
 
   // Summary counts
   const lostCount = activities.filter(a => a.category === "Lost").length;

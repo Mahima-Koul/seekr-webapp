@@ -33,6 +33,7 @@ export const protect = async (req, res, next) => {
 
     next(); // allow request
   } catch (error) {
+     console.error("JWT ERROR:", error.message); 
     return res.status(401).json({
       success: false,
       message: "Not authorized"

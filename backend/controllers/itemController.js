@@ -107,7 +107,7 @@ export const getAllItems = async (req, res) => {
    ========================= */
 export const getMyItems = async (req, res) => {
   try {
-    const items = await Item.find({ user: req.user.id })
+    const items = await Item.find({ createdBy: req.user._id })
       .sort({ date: -1 });
 
     res.json({ success: true, items });
@@ -165,12 +165,12 @@ export const toggleResolved = async (req, res) => {
   try {
     const { id } = req.body;
     const item = await Item.findById(id);
-
     if (!item) {
       return res.json({ success: false, message: "Item not found" });
     }
 
-    if (item.user.toString() !== req.user.id) {
+    if (item.createdBy.toString() !== req.user._id) {
+
       return res.status(403).json({
         success: false,
         message: "Not authorized"
