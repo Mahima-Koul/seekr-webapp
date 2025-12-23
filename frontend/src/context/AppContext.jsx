@@ -14,6 +14,8 @@ export const AppProvider =({children})=>{
     const [token, setToken]= useState(null)
     const [items, setItems]= useState([])
     const [input, setInput]= useState("")
+     const [selectedCategory, setSelectedCategory] = useState("All"); // ⭐ new state
+
 
     const fetchItems= async ()=>{
         try {
@@ -33,9 +35,19 @@ export const AppProvider =({children})=>{
         }
     },[])
 
+ // ⭐ Derived filtered items
+  const filteredItems =
+    selectedCategory === "All"
+      ? items
+      : items.filter((item) => item.type === selectedCategory);
+
 
     const value= {
-        axios, navigate, token, setToken, items, setItems, input, setInput
+        axios, navigate, token, setToken, items, setItems, input, setInput,
+    selectedCategory,
+    setSelectedCategory,
+    filteredItems, // ⭐ expose filtered list
+
     }
 
     return(

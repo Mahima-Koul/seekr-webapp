@@ -5,16 +5,25 @@ import { motion } from "motion/react"
 import { useAppContext } from '../context/AppContext.jsx'
 
 
+
 const Itemlist = () => {
   const [menu, setMenu] = React.useState('All');
   const { items, input } = useAppContext()
+
+//for filtering
+const electronicsItems = items.filter(item => item.type === "Electronics");
+const stationeryItems = items.filter(item => item.type === "Books & Stationery");
+const idcards= items.filter(item => item.type === "ID & Cards");
+const otherItems = items.filter(item =>
+  item.type !== "Electronics" && item.type !== "Books & Stationery" && item.type !== "ID & Cards"
+);
 
   const filteredItems = () => {
     if (input === '') {
       return items
     }
-    {/*mage chnges here added item.name ||'' and did item.category instaead of items.catgory */}
-    return items.filter((item) => (item.title || item.name || '').toLowerCase().includes(input.toLowerCase()) || item.category.toLowerCase().includes(input.toLowerCase()))
+    {/*mage chnges here added item.name ||'' and did item.category instaead of items.catgory nd item.category to item.description*/}
+    return items.filter((item) => (item.title || item.name || '').toLowerCase().includes(input.toLowerCase()) || item.description.toLowerCase().includes(input.toLowerCase()))
   }
 
   return (
@@ -35,7 +44,8 @@ const Itemlist = () => {
 
       </div>
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40'>
-        {filteredItems().filter((Item) => menu === 'All' || Item.category === menu)
+        {/*chnged itemcategory to item.type*/}
+        {filteredItems().filter((Item) => menu === 'All' || Item.type === menu)
           .map((Item) => <Itemcard key={Item._id} Item={Item} />)}
       </div>
 
