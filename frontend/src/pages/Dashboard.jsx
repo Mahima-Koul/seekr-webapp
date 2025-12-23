@@ -12,17 +12,17 @@ export default function YourActivity() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    navigate("/login", { replace: true });
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login", { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // Fetch all items of the user
   const fetchActivities = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("/api/item/myitems"); 
+      const { data } = await axios.get("/api/item/myitems");
       if (data.success) setActivities(data.items);
       else toast.error(data.message);
     } catch (error) {
@@ -37,11 +37,11 @@ export default function YourActivity() {
     try {
       console.log("checkpoint 1");
       const { data } = await axios.post("/api/item/toggle-resolve", { id });
+      console.log("toggleResolved response:", data);
       if (data.success) {
         toast.success(data.message);
         fetchActivities();
       } else {
-        console.log("toggleResolved response:", data);
         toast.error(data.message);
       }
     } catch (error) {
@@ -49,11 +49,11 @@ export default function YourActivity() {
     }
   };
 
-useEffect(() => {
-  if (token) {
-    fetchActivities();
-  }
-}, [token]);
+  useEffect(() => {
+    if (token) {
+      fetchActivities();
+    }
+  }, [token]);
 
 
   // Summary counts
@@ -121,10 +121,13 @@ useEffect(() => {
                 </span>
                 <button
                   onClick={() => handleToggleResolved(activity._id)}
-                  className="px-3 py-1 bg-black text-white rounded hover:bg-gray-800 transition text-sm"
+                  className={`px-3 py-1 rounded text-white text-sm ${activity.resolved ? "bg-gray-400 cursor-not-allowed" : "bg-black hover:bg-gray-800"
+                    }`}
+                  disabled={activity.resolved}
                 >
-                  {activity.resolved ? "Mark Pending" : "Resolve"}
+                  {activity.resolved ? "Resolved" : "Resolve"}
                 </button>
+
               </div>
             ))}
           </div>

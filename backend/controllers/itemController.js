@@ -169,7 +169,7 @@ export const toggleResolved = async (req, res) => {
       return res.json({ success: false, message: "Item not found" });
     }
 
-    if (item.createdBy.toString() !== req.user._id) {
+    if (item.createdBy.toString() !== req.user._id.toString()) {
 
       return res.status(403).json({
         success: false,
@@ -177,10 +177,14 @@ export const toggleResolved = async (req, res) => {
       });
     }
 
-    item.resolved = !item.resolved;
+    if (item.resolved) {
+      return res.json({ success: false, message: "Item is already resolved" });
+    }
+
+    item.resolved = true;
     await item.save();
 
-    res.json({ success: true, message: "Item status updated" });
+    res.json({ success: true, message: "Item marked as resolved!" });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
