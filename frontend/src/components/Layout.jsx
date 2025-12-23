@@ -34,7 +34,7 @@ export default function Layout() {
               Found an Item
             </Link>
 
-            <Link to="/my-claims" className={linkClass("/my-claims")}>
+            <Link to="/claims" className={linkClass("/claims")}>
               💬 My Claims
             </Link>
 

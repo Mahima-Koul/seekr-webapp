@@ -121,7 +121,7 @@ export const getMyItems = async (req, res) => {
    ========================= */
 export const getItemById = async (req, res) => {
   try {
-    const item = await Item.findById(req.params.id);
+    const item = await Item.findById(req.params.id).populate("createdBy", "name phone");;
 
     if (!item) {
       return res.json({ success: false, message: "Item not found" });

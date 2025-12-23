@@ -6,7 +6,7 @@ import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import ReportLost from "./pages/ReportLost";
 import ItemsList from "./pages/ItemsList";
-import MyClaims from "./pages/MyClaims";
+import MyClaims from "./pages/Claims";
 import Home from "./pages/Home";
 import Item from "./pages/Item";
 import Login from "./pages/Login";
@@ -42,7 +42,7 @@ export default function App() {
           <Route path="report-lost" element={<ReportLost />} />
           <Route path="found-item" element={<FoundItem />} />
           <Route path="items-list" element={<ItemsList />} />
-          <Route path="my-claims" element={<MyClaims />} />
+          <Route path="claims" element={<MyClaims />} />
           <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
