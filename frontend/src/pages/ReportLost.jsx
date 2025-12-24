@@ -123,11 +123,20 @@ export default function ReportLost() {
         />
 
         <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-          className="border border-gray-300 p-2 rounded-md"
-        />
+  type="file"
+  accept="image/*"
+  onChange={(e) => setImage(e.target.files[0])}
+  className="
+    w-full border border-gray-300 rounded-md p-2
+    file:mr-4 file:py-2 file:px-4
+    file:rounded-md file:border-0
+    file:bg-black file:text-white
+    file:cursor-pointer
+    hover:file:bg-gray-500
+    focus:outline-none focus:ring-2 focus:ring-indigo-500
+  "
+/>
+
 
         <button
           type="submit"

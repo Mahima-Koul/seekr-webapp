@@ -12,13 +12,11 @@ export default function YourActivity() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!localStorage.getItem("token")) {
       navigate("/login", { replace: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // Fetch all items of the user
+
   const fetchActivities = async () => {
     try {
       setLoading(true);
@@ -32,12 +30,9 @@ export default function YourActivity() {
     }
   };
 
-  // Toggle resolved status
   const handleToggleResolved = async (id) => {
     try {
-      console.log("checkpoint 1");
       const { data } = await axios.post("/api/item/toggle-resolve", { id });
-      console.log("toggleResolved response:", data);
       if (data.success) {
         toast.success(data.message);
         fetchActivities();
@@ -50,42 +45,52 @@ export default function YourActivity() {
   };
 
   useEffect(() => {
-    if (token) {
-      fetchActivities();
-    }
+    if (token) fetchActivities();
   }, [token]);
 
-
-  // Summary counts
-  const lostCount = activities.filter(a => a.category === "Lost").length;
+  const lostCount = activities.filter(a => a.category === "Lost" && a.resolved==false).length;
   const foundCount = activities.filter(a => a.category === "Found").length;
   const resolvedCount = activities.filter(a => a.resolved).length;
 
   return (
-    <div className="p-6 space-y-8">
-      {/* --- SUMMARY CARDS --- */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-indigo-100 p-6 rounded-xl shadow-sm text-center hover:shadow-md transition">
-          <div className="text-3xl font-bold text-indigo-700">{lostCount}</div>
-          <div className="text-indigo-600 mt-1 font-medium">Lost Items Reported</div>
+    <div className="min-h-screen bg-gray-50 px-6 sm:px-10 py-10 space-y-10">
+
+      {/* ===== SUMMARY CARDS (HOME STYLE) ===== */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-indigo-50 p-6 rounded-2xl shadow-sm text-center">
+          <div className="text-4xl font-semibold text-indigo-700">
+            {lostCount}
+          </div>
+          <div className="mt-1 text-indigo-600">
+            Lost Items Reported
+          </div>
         </div>
 
-        <div className="bg-green-100 p-6 rounded-xl shadow-sm text-center hover:shadow-md transition">
-          <div className="text-3xl font-bold text-green-700">{foundCount}</div>
-          <div className="text-green-600 mt-1 font-medium">Found Items Submitted</div>
+        <div className="bg-green-50 p-6 rounded-2xl shadow-sm text-center">
+          <div className="text-4xl font-semibold text-green-700">
+            {foundCount}
+          </div>
+          <div className="mt-1 text-green-600">
+            Found Items Submitted
+          </div>
         </div>
 
-        <div className="bg-gray-100 p-6 rounded-xl shadow-sm text-center hover:shadow-md transition">
-          <div className="text-3xl font-bold text-gray-700">{resolvedCount}</div>
-          <div className="text-gray-600 mt-1 font-medium">Resolved Cases</div>
+        <div className="bg-gray-100 p-6 rounded-2xl shadow-sm text-center">
+          <div className="text-4xl font-semibold text-gray-700">
+            {resolvedCount}
+          </div>
+          <div className="mt-1 text-gray-600">
+            Resolved Cases
+          </div>
         </div>
-
-
       </div>
 
-      {/* --- RECENT ACTIVITY TABLE --- */}
+      {/* ===== RECENT ACTIVITY===== */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Recent Activity</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+          Recent Activity
+        </h2>
+
         {loading ? (
           <Loader />
         ) : (
@@ -105,11 +110,17 @@ export default function YourActivity() {
                 key={activity._id}
                 className="grid grid-cols-7 items-center px-4 py-3 border-b last:border-none text-gray-700 hover:bg-gray-50 transition"
               >
-                <span>{activity.category === "Lost" ? "Reported Lost" : "Found Item"}</span>
+                <span>
+                  {activity.category === "Lost"
+                    ? "Reported Lost"
+                    : "Found Item"}
+                </span>
                 <span>{activity.title}</span>
                 <span>{activity.category}</span>
                 <span>{activity.type}</span>
-                <span>{Moment(activity.date).format("DD MMM YYYY")}</span>
+                <span>
+                  {Moment(activity.date).format("DD MMM YYYY")}
+                </span>
                 <span
                   className={
                     activity.resolved
@@ -120,13 +131,16 @@ export default function YourActivity() {
                   {activity.resolved ? "Resolved" : "Pending"}
                 </span>
                 <button
-                  onClick={() => handleToggleResolved(activity._id)}
-                  className={`px-3 py-1 rounded text-white text-sm ${activity.resolved ? "bg-gray-400 cursor-not-allowed" : "bg-black hover:bg-gray-800"
-                    }`}
-                  disabled={activity.resolved}
-                >
-                  {activity.resolved ? "Resolved" : "Resolve"}
-                </button>
+  onClick={() => handleToggleResolved(activity._id)}
+  disabled={activity.resolved}
+  className={`px-3 py-1 rounded text-white text-sm cursor-pointer ${
+    activity.resolved
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-black"
+  }`}
+>
+  {activity.resolved ? "Resolved" : "Resolve"}
+</button>
 
               </div>
             ))}
@@ -134,13 +148,21 @@ export default function YourActivity() {
         )}
       </div>
 
+      {/* ===== BACK BUTTON ===== */}
       <div className="flex justify-center mt-10">
         <button
-          onClick={() => navigate("/")}
-          className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition font-medium"
-        >
-          ← Go Back to Home
-        </button>
+  onClick={() => navigate("/")}
+  className="
+    px-6 py-2 bg-black text-white rounded-lg font-medium
+    cursor-pointer
+    transition-all duration-200
+    hover:bg-gray-800 hover:-translate-y-0.5
+    active:translate-y-0
+  "
+>
+  ← Go Back to Home
+</button>
+
       </div>
     </div>
   );

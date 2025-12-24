@@ -17,7 +17,14 @@ export default function Layout() {
       {/* Sidebar */}
       <nav className="w-64 bg-white shadow-md p-6 flex flex-col justify-between">
         <div>
-          <img src={logo} alt="Seekr Logo" className="w-30 mb-6" />
+         <Link to="/">
+  <img
+    src={logo}
+    alt="Seekr Logo"
+    className="w-30 mb-6 cursor-pointer"
+  />
+</Link>
+
           <div className="flex flex-col gap-2">
             <Link to="/dashboard" className={linkClass("/dashboard")}>
               <LayoutDashboard size={18} />

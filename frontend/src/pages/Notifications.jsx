@@ -11,7 +11,7 @@ export default function Notifications() {
         transition={{ duration: 0.4 }}
         className="flex items-center gap-3 mt-10 mb-8"
       >
-        <Bell className="w-8 h-8 text-indigo-600" />
+        <Bell className="w-8 h-8 text-black-600" />
         <h1 className="text-3xl font-semibold text-gray-800">
           Notifications
         </h1>
@@ -24,8 +24,8 @@ export default function Notifications() {
         transition={{ delay: 0.3, duration: 0.4 }}
         className="bg-white rounded-2xl shadow-sm border border-gray-200 w-full max-w-lg p-8 flex flex-col items-center justify-center"
       >
-        <div className="w-16 h-16 flex items-center justify-center bg-indigo-100 rounded-full mb-4">
-          <Bell className="w-8 h-8 text-indigo-600" />
+        <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full mb-4">
+          <Bell className="w-8 h-8 text-black-600" />
         </div>
         <h2 className="text-xl font-medium text-gray-700 mb-2">
           You’re all caught up!

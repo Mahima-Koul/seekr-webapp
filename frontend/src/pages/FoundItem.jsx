@@ -85,15 +85,19 @@ export default function FoundItem() {
   };
 
   return (
-    <div className="bg-white shadow-xl rounded-xl p-8 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Report Found Item</h2>
+   <div className="bg-white shadow-xl rounded-xl p-8 max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">Report Found Item</h2>
+      <p className="text-gray-500 mb-2 text-sm"></p>
+      <p className="text-gray-500 mb-6 text-sm">
+        Fill the details below to report found item.
+      </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           name="title"
           value={form.title}
           onChange={handleChange}
-          className="border p-3 rounded-md"
+          className="border border-gray-300 p-3 rounded-md outline-none focus:ring-2 focus:ring-gray-700"
           placeholder="Item Name"
         />
 
@@ -101,7 +105,7 @@ export default function FoundItem() {
           name="description"
           value={form.description}
           onChange={handleChange}
-          className="border p-3 rounded-md"
+          className="border border-gray-300 p-3 rounded-md outline-none focus:ring-2 focus:ring-gray-700"
           placeholder="Description"
         />
 
@@ -109,7 +113,7 @@ export default function FoundItem() {
           name="type"
           value={form.type}
           onChange={handleChange}
-          className="border p-3 rounded-md"
+          className="border border-gray-300 p-3 rounded-md outline-none focus:ring-2 focus:ring-gray-700"
         >
           <option value="">Select Item Type</option>
           <option value="Electronics">Electronics</option>
@@ -122,7 +126,7 @@ export default function FoundItem() {
           name="location"
           value={form.location}
           onChange={handleChange}
-          className="border p-3 rounded-md"
+          className="border border-gray-300 p-3 rounded-md outline-none focus:ring-2 focus:ring-gray-700"
           placeholder="Found location"
         />
 
@@ -131,14 +135,14 @@ export default function FoundItem() {
           name="date"
           value={form.date}
           onChange={handleChange}
-          className="border p-3 rounded-md"
+          className="border border-gray-300 p-3 rounded-md outline-none focus:ring-2 focus:ring-gray-700"
         />
 
         <input
           name="contactInfo"
           value={form.contactInfo}
           onChange={handleChange}
-          className="border p-3 rounded-md"
+          className="border border-gray-300 p-3 rounded-md outline-none focus:ring-2 focus:ring-gray-700"
           placeholder="Contact info"
         />
 
@@ -146,6 +150,18 @@ export default function FoundItem() {
           type="file"
           accept="image/*"
           onChange={(e) => setImage(e.target.files[0])}
+          className="
+    w-full border border-gray-300 rounded-md p-2
+    file:mr-4 file:py-2 file:px-4
+    file:rounded-md file:border-0
+    file:bg-black file:text-white
+    file:cursor-pointer
+    hover:file:bg-gray-500
+    focus:outline-none focus:ring-2 focus:ring-indigo-500
+  "
+            
+            
+          
         />
 
         <button

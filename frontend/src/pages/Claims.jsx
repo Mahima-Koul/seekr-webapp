@@ -56,9 +56,17 @@ export default function Claims() {
         {loading ? (
           <Loader />
         ) : claims.length === 0 ? (
-          <p className="text-center text-gray-500">
-            No claims yet.
-          </p>
+          <div className="flex justify-center">
+  <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl p-8 text-center shadow-sm">
+    
+    <h2 className="text-lg font-medium text-gray-800 mb-1">
+      No claims yet
+    </h2>
+    <p className="text-gray-500 text-sm">
+      When someone claims one of your items, it’ll show up here.
+    </p>
+  </div>
+</div>
         ) : (
           <div className="space-y-6">
             {claims.map((claim) => (
