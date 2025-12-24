@@ -4,22 +4,20 @@ import { useAppContext } from '../context/AppContext'
 
 const Navbar = () => {
   const { navigate, token } = useAppContext();
-
+  
   return (
-    <div className='flex justify-between items-center py-5 mx-8 sm:mx-20 xl:mx-32 transform-none scale-100'>
+    <div className='flex justify-between items-center py-4 sm:py-5 px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32'>
       <img
-  src={assets.logo}
-  alt="Seekr Logo"
-  className="h-13 sm:h-15 w-auto cursor-pointer"
- />
-
-
+        src={assets.logo}
+        alt="Seekr Logo"
+        className="h-10 sm:h-12 md:h-14 w-auto cursor-pointer"
+      />
       <button
         onClick={() => navigate(token ? '/dashboard' : '/login')}
-        className='flex items-center gap-1 rounded-full text-[15px] cursor-pointer bg-black text-white px-12 py-2.5'
+        className='flex items-center gap-1 sm:gap-2 rounded-full text-sm sm:text-base cursor-pointer bg-black text-white px-6 sm:px-10 md:px-12 py-2 sm:py-2.5 hover:bg-gray-800 transition-colors'
       >
         {token ? 'Dashboard' : 'Login'}
-        <img src={assets.arrow} className='w-2 transform-none' alt='arrow' />
+        <img src={assets.arrow} className='w-2 sm:w-2.5' alt='arrow' />
       </button>
     </div>
   )
