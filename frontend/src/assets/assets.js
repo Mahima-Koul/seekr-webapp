@@ -55,7 +55,7 @@ export const assets = {
     dashboard_icon_3,
     dashboard_icon_4,
 }
-export const itemCategories = ['All', 'Electronics', 'ID & Cards', 'Books & Stationery', 'Miscellaneous']
+export const itemCategories = ['All', 'Electronics', 'ID & Cards', 'Books & Stationery', 'Other']
 
 export const Item_data = [
   {

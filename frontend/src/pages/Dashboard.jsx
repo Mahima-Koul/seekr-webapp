@@ -179,7 +179,7 @@ export default function YourActivity() {
       <div className="flex justify-center mt-10">
         <button
           onClick={() => navigate("/")}
-          className="px-6 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition"
+          className="px-6 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 ransition-transform duration-200 hover:-translate-y-1"
         >
           ← Go Back to Home
         </button>

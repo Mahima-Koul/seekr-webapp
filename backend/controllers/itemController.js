@@ -2,6 +2,38 @@ import fs from "fs";
 import imagekit from "../configs/imageKit.js";
 import Item from "../models/Item.js";
 
+// UPDATE ITEM (only owner)
+export const updateItemById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id; // set by protect middleware
+
+    const item = await Item.findById(id);
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    // 🔐 ownership check
+    if (item.createdBy.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "You cannot edit this item" });
+    }
+
+    // update only allowed fields
+    item.title = req.body.title ?? item.title;
+    item.description = req.body.description ?? item.description;
+    item.location = req.body.location ?? item.location;
+    item.category = req.body.category ?? item.category;
+
+    const updatedItem = await item.save();
+
+    res.status(200).json(updatedItem);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 /* =========================
    ADD ITEM
    ========================= */
@@ -189,4 +221,3 @@ export const toggleResolved = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
-

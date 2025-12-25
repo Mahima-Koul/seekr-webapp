@@ -5,18 +5,38 @@ import Moment from "moment";
 import Loader from "../components/Loader.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Item = () => {
   const { id } = useParams();
-  const { axios } = useAppContext();
+ const { axios } = useAppContext();
+const user = JSON.parse(localStorage.getItem("user"));
+const navigate = useNavigate();
+
+
   const [data, setData] = React.useState(null);
   const [showContact, setShowContact] = React.useState(false);
+  const [isEditing, setIsEditing] = React.useState(false);
+
+const [editForm, setEditForm] = React.useState({
+  title: "",
+  description: "",
+  location: "",
+  category: "",
+});
 
   const fetchItemData = async () => {
     try {
       const { data } = await axios.get(`/api/item/${id}`);
       if (data.success) {
         setData(data.item);
+        setEditForm({
+  title: data.item.title,
+  description: data.item.description,
+  location: data.item.location,
+  category: data.item.category,
+});
+
       } else {
         toast.error(data.message);
       }
@@ -24,18 +44,24 @@ const Item = () => {
       toast.error(error.message);
     }
   };
-
   React.useEffect(() => {
     fetchItemData();
   }, [id]);
 
   if (!data) return <Loader />;
+const isOwner = String(user?.id) === String(data.createdBy?._id);
+{isEditing && <p className="text-red-500">EDIT MODE ACTIVE</p>}
+
+
+
+
 
   const isLost = data.type === "LOST"; // or however you store this
 
   return (
     <div className="relative min-h-screen bg-white text-gray-900">
       <Navbar />
+  
 
       <div className="max-w-4xl mx-auto px-4 py-16">
         {/* Title & Date */}
@@ -71,6 +97,7 @@ const Item = () => {
                 dangerouslySetInnerHTML={{ __html: data.description }}
               />
             </div>
+<div className="mt-8 flex gap-8 justify-start">
 
             {/* CLAIM BUTTON */}
             <button
@@ -79,9 +106,25 @@ const Item = () => {
             >
               {isLost ? "I Found This Item" : "Claim This Item"}
             </button>
+            
+      {/* EDIT BUTTON - ONLY FOR OWNER */}
+{isOwner && (
+  <button
+    onClick={() => navigate(`/item/${id}/edit`)}
+    className="mt-6 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition"
+  >
+    Edit Item
+  </button>
+)}
+</div>
           </div>
         </div>
       </div>
+
+
+
+
+
 
       {/* CONTACT MODAL */}
       {showContact && (
