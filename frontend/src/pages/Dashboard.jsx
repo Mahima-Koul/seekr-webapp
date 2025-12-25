@@ -8,39 +8,37 @@ import Moment from "moment";
 export default function YourActivity() {
   const navigate = useNavigate();
   const { axios, token } = useAppContext();
+
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  /* ---------------- AUTH GUARD ---------------- */
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
+    // wait for context to hydrate token
+    if (token === null) return;
+
+    if (!token) {
       navigate("/login", { replace: true });
     }
-  }, []);
+  }, [token, navigate]);
 
+  /* ---------------- FETCH USER ITEMS ---------------- */
   const fetchActivities = async () => {
+    if (!token) return;
+
     try {
       setLoading(true);
       const { data } = await axios.get("/api/item/myitems");
-      if (data.success) setActivities(data.items);
-      else toast.error(data.message);
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleToggleResolved = async (id) => {
-    try {
-      const { data } = await axios.post("/api/item/toggle-resolve", { id });
       if (data.success) {
-        toast.success(data.message);
-        fetchActivities();
+        setActivities(data.items);
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,14 +46,40 @@ export default function YourActivity() {
     if (token) fetchActivities();
   }, [token]);
 
-  const lostCount = activities.filter(a => a.category === "Lost" && a.resolved==false).length;
-  const foundCount = activities.filter(a => a.category === "Found").length;
-  const resolvedCount = activities.filter(a => a.resolved).length;
+  /* ---------------- TOGGLE RESOLVED ---------------- */
+  const handleToggleResolved = async (id) => {
+    try {
+      const { data } = await axios.post("/api/item/toggle-resolve", { id });
 
+      if (data.success) {
+        toast.success(data.message);
+        fetchActivities();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
+  };
+
+  /* ---------------- STATS ---------------- */
+  const lostCount = activities.filter(
+    (a) => a.category === "Lost" && !a.resolved
+  ).length;
+
+  const foundCount = activities.filter(
+    (a) => a.category === "Found" && !a.resolved
+  ).length;
+
+  const resolvedCount = activities.filter(
+    (a) => a.resolved
+  ).length;
+
+  /* ---------------- UI ---------------- */
   return (
     <div className="min-h-screen bg-gray-50 px-6 sm:px-10 py-10 space-y-10">
-
-      {/* ===== SUMMARY CARDS (HOME STYLE) ===== */}
+      
+      {/* SUMMARY */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-indigo-50 p-6 rounded-2xl shadow-sm text-center">
           <div className="text-4xl font-semibold text-indigo-700">
@@ -85,7 +109,7 @@ export default function YourActivity() {
         </div>
       </div>
 
-      {/* ===== RECENT ACTIVITY===== */}
+      {/* ACTIVITY TABLE */}
       <div>
         <h2 className="text-xl font-semibold mb-4 text-gray-800">
           Recent Activity
@@ -115,12 +139,15 @@ export default function YourActivity() {
                     ? "Reported Lost"
                     : "Found Item"}
                 </span>
+
                 <span>{activity.title}</span>
                 <span>{activity.category}</span>
-                <span>{activity.type}</span>
+                <span>{activity.type || "-"}</span>
+
                 <span>
                   {Moment(activity.date).format("DD MMM YYYY")}
                 </span>
+
                 <span
                   className={
                     activity.resolved
@@ -130,39 +157,32 @@ export default function YourActivity() {
                 >
                   {activity.resolved ? "Resolved" : "Pending"}
                 </span>
-                <button
-  onClick={() => handleToggleResolved(activity._id)}
-  disabled={activity.resolved}
-  className={`px-3 py-1 rounded text-white text-sm cursor-pointer ${
-    activity.resolved
-      ? "bg-gray-400 cursor-not-allowed"
-      : "bg-black"
-  }`}
->
-  {activity.resolved ? "Resolved" : "Resolve"}
-</button>
 
+                <button
+                  onClick={() => handleToggleResolved(activity._id)}
+                  disabled={activity.resolved}
+                  className={`px-3 py-1 rounded text-white text-sm transition ${
+                    activity.resolved
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-black hover:bg-gray-800"
+                  }`}
+                >
+                  {activity.resolved ? "Resolved" : "Resolve"}
+                </button>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* ===== BACK BUTTON ===== */}
+      {/* BACK */}
       <div className="flex justify-center mt-10">
         <button
-  onClick={() => navigate("/")}
-  className="
-    px-6 py-2 bg-black text-white rounded-lg font-medium
-    cursor-pointer
-    transition-all duration-200
-    hover:bg-gray-800 hover:-translate-y-0.5
-    active:translate-y-0
-  "
->
-  ← Go Back to Home
-</button>
-
+          onClick={() => navigate("/")}
+          className="px-6 py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition"
+        >
+          ← Go Back to Home
+        </button>
       </div>
     </div>
   );

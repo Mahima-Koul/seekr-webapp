@@ -106,7 +106,7 @@ const Item = () => {
               onClick={() => setShowContact(false)}
               className="mt-6 w-full px-4 py-2 border rounded-lg hover:bg-gray-100 transition"
             >
-              Close
+              Close 
             </button>
           </div>
         </div>
