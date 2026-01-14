@@ -1,42 +1,27 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar.jsx";
 import Moment from "moment";
 import Loader from "../components/Loader.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 const Item = () => {
   const { id } = useParams();
- const { axios } = useAppContext();
-const user = JSON.parse(localStorage.getItem("user"));
-const navigate = useNavigate();
-
+  const navigate = useNavigate();
+  const { axios } = useAppContext();
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const [data, setData] = React.useState(null);
   const [showContact, setShowContact] = React.useState(false);
-  const [isEditing, setIsEditing] = React.useState(false);
-
-const [editForm, setEditForm] = React.useState({
-  title: "",
-  description: "",
-  location: "",
-  category: "",
-});
+  const [myClaim, setMyClaim] = React.useState(null);
+  const [loadingClaim, setLoadingClaim] = React.useState(false);
 
   const fetchItemData = async () => {
     try {
       const { data } = await axios.get(`/api/item/${id}`);
       if (data.success) {
         setData(data.item);
-        setEditForm({
-  title: data.item.title,
-  description: data.item.description,
-  location: data.item.location,
-  category: data.item.category,
-});
-
       } else {
         toast.error(data.message);
       }
@@ -44,27 +29,62 @@ const [editForm, setEditForm] = React.useState({
       toast.error(error.message);
     }
   };
+
+  const fetchMyClaim = async (item) => {
+    if (!user) return;
+
+    try {
+      const res = await axios.get("/api/claims/mine");
+      const claim = res.data.claims.find(
+        (c) => c.item._id === item._id
+      );
+      setMyClaim(claim || null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   React.useEffect(() => {
     fetchItemData();
   }, [id]);
 
+  React.useEffect(() => {
+    if (data) fetchMyClaim(data);
+  }, [data]);
+
   if (!data) return <Loader />;
-const isOwner = String(user?.id) === String(data.createdBy?._id);
-{isEditing && <p className="text-red-500">EDIT MODE ACTIVE</p>}
 
+  const isOwner = String(user?.id) === String(data.createdBy?._id);
+  const isLost = data.type === "LOST";
 
+  const handleClaim = async () => {
+    try {
+      setLoadingClaim(true);
+      const type = data.type === "FOUND" ? "CLAIM" : "FOUND";
+      const res = await axios.post("/api/claims/create", {
+        itemId: data._id,
+        type,
+      });
 
-
-
-  const isLost = data.type === "LOST"; // or however you store this
+      if (res.data.success) {
+        toast.success("Request sent for approval");
+        fetchMyClaim(data);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoadingClaim(false);
+    }
+  };
 
   return (
     <div className="relative min-h-screen bg-white text-gray-900">
       <Navbar />
-  
 
       <div className="max-w-4xl mx-auto px-4 py-16">
-        {/* Title & Date */}
+        {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-5xl font-bold">{data.title}</h1>
           <p className="text-gray-500 mt-2">
@@ -72,7 +92,7 @@ const isOwner = String(user?.id) === String(data.createdBy?._id);
           </p>
         </div>
 
-        {/* Image & Info */}
+        {/* Image + Info */}
         <div className="flex flex-col md:flex-row md:gap-10 items-start">
           {data.image && (
             <img
@@ -97,42 +117,67 @@ const isOwner = String(user?.id) === String(data.createdBy?._id);
                 dangerouslySetInnerHTML={{ __html: data.description }}
               />
             </div>
-<div className="mt-8 flex gap-8 justify-start">
 
-            {/* CLAIM BUTTON */}
-            <button
-              onClick={() => setShowContact(true)}
-              className="mt-6 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition"
-            >
-              {isLost ? "I Found This Item" : "Claim This Item"}
-            </button>
-            
-      {/* EDIT BUTTON - ONLY FOR OWNER */}
-{isOwner && (
-  <button
-    onClick={() => navigate(`/item/${id}/edit`)}
-    className="mt-6 px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition"
-  >
-    Edit Item
-  </button>
-)}
-</div>
+            <div className="mt-8 flex gap-6 flex-wrap">
+              {/* CLAIM / STATUS */}
+              {!isOwner && data.status !== "CLOSED" && (
+                <>
+                  {!myClaim && (
+                    <button
+                      onClick={handleClaim}
+                      disabled={loadingClaim}
+                      className="px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition"
+                    >
+                      {loadingClaim
+                        ? "Sending..."
+                        : isLost
+                        ? "I Found This Item"
+                        : "Claim This Item"}
+                    </button>
+                  )}
+
+                  {myClaim?.status === "PENDING" && (
+                    <p className="text-yellow-600 font-medium">
+                      🟡 Request pending approval
+                    </p>
+                  )}
+
+                  {myClaim?.status === "REJECTED" && (
+                    <p className="text-red-600 font-medium">
+                      🔴 Request rejected
+                    </p>
+                  )}
+
+                  {myClaim?.status === "APPROVED" && (
+                    <button
+                      onClick={() => setShowContact(true)}
+                      className="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition"
+                    >
+                      View Contact Details
+                    </button>
+                  )}
+                </>
+              )}
+
+              {/* EDIT BUTTON */}
+              {isOwner && (
+                <button
+                  onClick={() => navigate(`/item/${id}/edit`)}
+                  className="px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition"
+                >
+                  Edit Item
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
-
-
-
-
-
 
       {/* CONTACT MODAL */}
       {showContact && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-[90%] max-w-md relative">
-            <h2 className="text-2xl font-bold mb-4">
-              Contact Details
-            </h2>
+            <h2 className="text-2xl font-bold mb-4">Contact Details</h2>
 
             <div className="space-y-2 text-gray-700">
               <p>
@@ -149,7 +194,7 @@ const isOwner = String(user?.id) === String(data.createdBy?._id);
               onClick={() => setShowContact(false)}
               className="mt-6 w-full px-4 py-2 border rounded-lg hover:bg-gray-100 transition"
             >
-              Close 
+              Close
             </button>
           </div>
         </div>

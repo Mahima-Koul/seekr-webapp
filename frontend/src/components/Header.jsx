@@ -5,22 +5,22 @@ import { useAppContext } from '../context/AppContext'
 const Header = () => {
   const { setInput } = useAppContext()
   const inputRef = useRef()
-  
+
   const onSubmitHandler = async (e) => {
     e.preventDefault()
     setInput(inputRef.current.value)
   }
-  
+
   const onClear = () => {
     setInput('')
     inputRef.current.value = ''
   }
-  
+
   return (
     <div className='px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 relative'>
       <div className='text-center mt-6 sm:mt-8 md:mt-10 mb-6 sm:mb-8'>
         <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight text-gray-700 px-2'>
-          Find your <span className='text-black'>lost</span> <br className="hidden sm:block" /> 
+          Find your <span className='text-black'>lost</span> <br className="hidden sm:block" />
           <span className="sm:hidden"> </span>items
         </h1>
         <p className='my-4 sm:my-6 md:my-8 max-w-2xl mx-auto text-xs sm:text-sm md:text-base text-gray-500 px-4'>

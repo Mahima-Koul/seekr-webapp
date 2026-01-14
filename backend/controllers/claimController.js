@@ -4,7 +4,6 @@ import Notification from "../models/Notification.js";
 
 /**
  * CREATE CLAIM / FOUND REQUEST
- * type = "CLAIM" or "FOUND"
  */
 export const createClaim = async (req, res) => {
   try {
@@ -15,20 +14,20 @@ export const createClaim = async (req, res) => {
       return res.json({ success: false, message: "Item not found" });
     }
 
-    // ❌ can't claim your own item
+    // ❌ cannot claim your own item
     if (item.createdBy.toString() === req.user._id.toString()) {
-      return res.json({ success: false, message: "You own this item" });
+      return res.json({ success: false, message: "You cannot claim your own item" });
     }
 
     // ❌ prevent duplicate pending claims
-    const existingClaim = await Claim.findOne({
+    const alreadyRequested = await Claim.findOne({
       item: itemId,
       requester: req.user._id,
       status: "PENDING",
     });
 
-    if (existingClaim) {
-      return res.json({ success: false, message: "Claim already sent" });
+    if (alreadyRequested) {
+      return res.json({ success: false, message: "Request already sent" });
     }
 
     const claim = await Claim.create({
@@ -38,23 +37,24 @@ export const createClaim = async (req, res) => {
       type,
     });
 
-    // 🔔 notify owner
     await Notification.create({
       user: item.createdBy,
       message:
         type === "CLAIM"
-          ? "Someone requested to claim your item"
-          : "Someone said they found your item",
+          ? "Someone wants to claim your item"
+          : "Someone says they found your lost item",
       link: "/dashboard",
     });
 
-    res.json({ success: true, message: "Request sent successfully" });
+    res.json({ success: true, message: "Request sent successfully", claim });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 };
 
-
+/**
+ * APPROVE CLAIM
+ */
 export const approveClaim = async (req, res) => {
   try {
     const { claimId } = req.body;
@@ -64,7 +64,6 @@ export const approveClaim = async (req, res) => {
       return res.json({ success: false, message: "Claim not found" });
     }
 
-    // ❌ only item owner can approve
     if (claim.owner.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, message: "Not authorized" });
     }
@@ -72,10 +71,12 @@ export const approveClaim = async (req, res) => {
     claim.status = "APPROVED";
     await claim.save();
 
-    // 🔔 notify requester
+    // ✅ mark item resolved
+    await Item.findByIdAndUpdate(claim.item._id, { resolved: true });
+
     await Notification.create({
       user: claim.requester._id,
-      message: "Your request was approved. Contact info unlocked.",
+      message: "Your request was approved! Contact the owner.",
       link: `/item/${claim.item._id}`,
     });
 
@@ -85,6 +86,9 @@ export const approveClaim = async (req, res) => {
   }
 };
 
+/**
+ * REJECT CLAIM
+ */
 export const rejectClaim = async (req, res) => {
   try {
     const { claimId } = req.body;
@@ -106,4 +110,3 @@ export const rejectClaim = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
-
