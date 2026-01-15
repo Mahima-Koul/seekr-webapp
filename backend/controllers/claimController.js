@@ -5,8 +5,15 @@ import Notification from "../models/Notification.js";
 /**
  * CREATE CLAIM / FOUND REQUEST
  */
+
 export const createClaim = async (req, res) => {
   try {
+     if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Please login to claim this item",
+      });
+    }
     const { itemId, type } = req.body;
 
     const item = await Item.findById(itemId);
@@ -36,14 +43,30 @@ export const createClaim = async (req, res) => {
       owner: item.createdBy,
       type,
     });
+    const claimantName = req.user.name;
+const claimantEmail = req.user.email;
 
+let notificationMessage = "";
+
+if (item.category === "Lost") {
+  // someone claims a LOST item → they “found it”
+  notificationMessage = `${claimantName} (${claimantEmail}) says they found your lost item: "${item.title}"`;
+} else if (item.category === "Found") {
+  // someone claims a FOUND item → just claim
+  notificationMessage = `${claimantName} (${claimantEmail}) claimed your found item: "${item.title}"`;
+}
+if (!notificationMessage) {
+  return res.status(400).json({ success: false, message: "Notification message cannot be empty" });
+}
     await Notification.create({
       user: item.createdBy,
-      message:
-        type === "CLAIM"
-          ? "Someone wants to claim your item"
-          : "Someone says they found your lost item",
-      link: "/dashboard",
+      message:notificationMessage,
+      //   type === "CLAIM"
+      //     ? `${req.user.name} (${req.user.email}) claimed the item you found` 
+      //     :  `${req.user.name} (${req.user.email}) says they found your lost item`,
+      // link: "/dashboard",
+ link: "/dashboard" ,
+  type: "CLAIM"
     });
 
     res.json({ success: true, message: "Request sent successfully", claim });
@@ -117,11 +140,11 @@ export const getMyClaims=async(req,res)=>{
         if (!req.user) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
-    const claims=await Claim.find({requester:req.user._id}).populate("item").sort({createdAt:-1});
+    const claims=await Claim.find({requester:req.user._id}).populate("item")  .populate("requester", "name email").sort({createdAt:-1});
 
     res.json({success:true,claims,});
      console.log("CLAIMS FETCHED:", claims); // 🔹 Check what is returned
-    res.json({ success: true, claims });
+   
   }
   catch(error){
      console.error("Error fetching claims:", error); 

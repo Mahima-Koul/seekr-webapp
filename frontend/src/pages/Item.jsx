@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 const Item = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { axios } = useAppContext();
+  const { axios,token } = useAppContext();
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [data, setData] = React.useState(null);
@@ -31,7 +31,7 @@ const Item = () => {
   };
 
   const fetchMyClaim = async (item) => {
-    if (!user) return;
+    if (!token) return;
 
     try {
       const res = await axios.get("/api/claims/my-claims",{
@@ -60,6 +60,11 @@ const Item = () => {
   const isLost = data.type === "LOST";
 
   const handleClaim = async () => {
+      if (!token) {
+    toast.error("Please login to claim this item");
+    navigate("/login");
+    return;
+  }
     try {
       setLoadingClaim(true);
       const type = data.type === "FOUND" ? "CLAIM" : "FOUND";
