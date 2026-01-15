@@ -110,3 +110,24 @@ export const rejectClaim = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+export const getMyClaims=async(req,res)=>{
+  try{
+     console.log("REQ USER:", req.user);
+        if (!req.user) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+    const claims=await Claim.find({requester:req.user._id}).populate("item").sort({createdAt:-1});
+
+    res.json({success:true,claims,});
+     console.log("CLAIMS FETCHED:", claims); // 🔹 Check what is returned
+    res.json({ success: true, claims });
+  }
+  catch(error){
+     console.error("Error fetching claims:", error); 
+    res.status(500).json({
+      success:false,message:"Failed to fetch claims ",
+       error: error.message
+    });
+  }
+};

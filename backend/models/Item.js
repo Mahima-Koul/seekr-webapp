@@ -24,5 +24,5 @@ const itemSchema = new mongoose.Schema(
 
 
 //Create and export the Item model based on the itemSchema
-const Item=mongoose.model('item', itemSchema)
+const Item=mongoose.model('Item', itemSchema)
 export default Item

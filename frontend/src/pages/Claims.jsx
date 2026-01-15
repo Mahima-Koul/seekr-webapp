@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useAppContext } from "../context/AppContext.jsx";
 import Navbar from "../components/navbar.jsx";
 import Loader from "../components/Loader.jsx";
@@ -6,28 +7,36 @@ import toast from "react-hot-toast";
 import Moment from "moment";
 
 export default function Claims() {
-  const { axios } = useAppContext();
+  
+  const { axios,token } = useAppContext();
   const [claims, setClaims] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchClaims = async () => {
+      if (!token) return; 
     try {
       setLoading(true);
-      const { data } = await axios.get("/api/claim/my-claims");
+      const { data } = await axios.get("/api/claim/my-claims",{  headers: { Authorization: `Bearer ${token}` },});
       if (data.success) setClaims(data.claims);
       else toast.error(data.message);
     } catch (error) {
       toast.error(error.message);
+        console.error("Error fetching claims:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleAction = async (claimId, action) => {
+      if (!token) return toast.error("No token found");
     try {
-      const { data } = await axios.post("/api/claim/update-status", {
-        claimId,
-        action, // "approved" or "rejected"
+       const endpoint =
+      action === "approved"
+        ? "/api/claim/approve"
+        : "/api/claim/reject";
+      const { data } = await axios.post(endpoint,
+       { claimId},
+         { headers: { Authorization: `Bearer ${token}` }
       });
 
       if (data.success) {
@@ -38,12 +47,13 @@ export default function Claims() {
       }
     } catch (error) {
       toast.error(error.message);
+            console.error("Error updating claim:", error);
     }
   };
 
   useEffect(() => {
     fetchClaims();
-  }, []);
+  }, [token]);
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -95,7 +105,7 @@ export default function Claims() {
                         : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {claim.status.toUpperCase()}
+                    {claim.status}
                   </span>
                 </div>
 
@@ -103,10 +113,10 @@ export default function Claims() {
                 <div className="mt-4 text-gray-700">
                   <p>
                     <span className="font-medium">Requested by:</span>{" "}
-                    {claim.claimedBy.name}
+                    {claim.requester?.name || "Unknown"}
                   </p>
                   <p className="text-sm text-gray-500">
-                    {claim.claimedBy.email}
+                    {claim.requester?.email || "Unknown"}
                   </p>
                 </div>
 

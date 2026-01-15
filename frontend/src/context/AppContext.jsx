@@ -5,7 +5,12 @@ import toast from "react-hot-toast";
 
 
 axios.defaults.baseURL= import.meta.env.VITE_BASE_URL
-const AppContext = createContext();
+// const storedToken = localStorage.getItem("token");
+// if (storedToken) {
+//   axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+// }
+
+export const AppContext = createContext();
 
 export const AppProvider =({children})=>{
 
@@ -16,24 +21,63 @@ export const AppProvider =({children})=>{
     const [input, setInput]= useState("")
      const [selectedCategory, setSelectedCategory] = useState("All"); // ⭐ new state
 
+const fetchPublicItems = async () => {
+  try {
+    const { data } = await axios.get('/api/item/all'); // NO token
+    if (data.success) setItems(data.items);
+  } catch (err) {
+    console.error("Error fetching public items:", err);
+  }
+};
 
+// Fetch public items ONCE, even if no token
+useEffect(() => {
+  fetchPublicItems();
+}, []);
+
+     
     const fetchItems= async ()=>{
+        if (!token) return;
         try {
-            const {data}= await axios.get('/api/item/all')
+            const {data}= await axios.get('/api/item/all', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      //withCredentials: true,
+    });//
             data.success? setItems(data.items) : toast.error(data.message)
         } catch (error) {
              toast.error(error.message)
         }
     }
 
-    useEffect(()=>{
-        fetchItems()
-        const token= localStorage.getItem('token')
-        if(token){
-            setToken(token)
-            axios.defaults.headers.common['Authorization']=`Bearer ${token}`
-        }
-    },[])
+      useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+     axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+    }
+    else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  }, []);
+  
+
+  useEffect(() => {
+  if (!token) return;
+  fetchItems();
+}, [token]);
+
+    // useEffect(()=>{
+    //     ///
+    //     if (!token) return;
+    //     fetchItems()
+    //     const token= localStorage.getItem('token')
+    //     if(token){
+    //         setToken(token)
+    //         axios.defaults.headers.common['Authorization']=`Bearer ${token}`
+    //     }
+    // },[])
 
  // ⭐ Derived filtered items
   const filteredItems =

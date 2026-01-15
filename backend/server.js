@@ -7,6 +7,7 @@ import itemRouter from './routes/itemRoutes.js'
 import auth from './middleware/auth.js' 
 import { protect } from "./middleware/auth.js";
 import claimRouter from './routes/claimRoutes.js'
+import notificationRouter from "./routes/notifications.js";
 
 const app= express()
 
@@ -33,6 +34,7 @@ app.get("/api/protected-test", protect, (req, res) => {
 app.use("/api/auth", authRouter)
 app.use("/api/item", itemRouter)
 app.use("/api/claim", claimRouter);
+app.use("/api/notifications", notificationRouter);
 
 const PORT= process.env.PORT || 3000;
 

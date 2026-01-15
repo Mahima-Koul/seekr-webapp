@@ -34,7 +34,9 @@ const Item = () => {
     if (!user) return;
 
     try {
-      const res = await axios.get("/api/claims/mine");
+      const res = await axios.get("/api/claims/my-claims",{
+  headers: { Authorization: `Bearer ${token}` },
+});
       const claim = res.data.claims.find(
         (c) => c.item._id === item._id
       );
@@ -61,7 +63,7 @@ const Item = () => {
     try {
       setLoadingClaim(true);
       const type = data.type === "FOUND" ? "CLAIM" : "FOUND";
-      const res = await axios.post("/api/claims/create", {
+      const res = await axios.post("/api/claim/create", {
         itemId: data._id,
         type,
       });

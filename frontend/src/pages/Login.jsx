@@ -1,7 +1,10 @@
+import { useContext } from "react";
+import { AppContext } from "../context/AppContext";
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -9,6 +12,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+   const { setToken } = useContext(AppContext);
 
   // Handle form submission
   const handleLogin = async (e) => {
@@ -31,7 +35,7 @@ export default function Login() {
         // 🔐 Save token & user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-
+        setToken(data.token);
         // 🔗 Attach token to future axios requests
         axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
 
